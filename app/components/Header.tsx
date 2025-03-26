@@ -8,97 +8,53 @@ export default function Header() {
   const pathname = usePathname();
   
   return (
-    <header 
-      className="bg-white text-gray-800 shadow-sm py-4 border-b border-gray-200"
-      style={{
-        backgroundColor: 'white',
-        color: '#1F2937',
-        padding: '1rem 0',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-        borderBottom: '1px solid #E5E7EB'
-      }}
-    >
-      <div 
-        className="container mx-auto px-4 flex justify-between items-center"
-        style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <div 
-          className="flex items-center space-x-2"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}
-        >
-          <h1 
-            className="text-2xl font-bold text-gray-900"
-            style={{
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: '#111827'
-            }}
-          >
-            10,000 Hours
-          </h1>
+    <header className="bg-white shadow-sm py-4 border-b border-slate-100 sticky top-0 z-10">
+      <div className="container mx-auto px-6 flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-bold text-slate-800">10,000 Hours</h1>
+          </div>
         </div>
         <div className="flex items-center">
-          <nav className="mr-6">
-            <ul 
-              className="flex space-x-6"
-              style={{
-                display: 'flex',
-                gap: '1.5rem'
-              }}
-            >
+          <nav className="mr-8">
+            <ul className="flex space-x-8">
               <li>
                 <Link 
                   href="/" 
-                  className={`hover:text-blue-600 transition-colors ${
-                    pathname === '/' ? 'font-medium text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600'
+                  className={`flex items-center transition-colors px-1 py-1 ${
+                    pathname === '/' 
+                      ? 'text-indigo-600 font-medium' 
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  style={{
-                    textDecoration: 'none',
-                    transition: 'color 0.15s ease',
-                    ...(pathname === '/' ? {
-                      fontWeight: 500,
-                      color: '#2563EB',
-                      borderBottom: '2px solid #2563EB',
-                      paddingBottom: '0.25rem'
-                    } : {
-                      color: '#4B5563'
-                    })
-                  }}
                 >
-                  Dashboard
+                  <span className="relative">
+                    Dashboard
+                    {pathname === '/' && (
+                      <span className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-indigo-600 rounded-full"></span>
+                    )}
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link 
                   href="/timer" 
-                  className={`hover:text-blue-600 transition-colors ${
-                    pathname.startsWith('/timer') ? 'font-medium text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600'
+                  className={`flex items-center transition-colors px-1 py-1 ${
+                    pathname.startsWith('/timer') 
+                      ? 'text-indigo-600 font-medium' 
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
-                  style={{
-                    textDecoration: 'none',
-                    transition: 'color 0.15s ease',
-                    ...(pathname.startsWith('/timer') ? {
-                      fontWeight: 500,
-                      color: '#2563EB',
-                      borderBottom: '2px solid #2563EB',
-                      paddingBottom: '0.25rem'
-                    } : {
-                      color: '#4B5563'
-                    })
-                  }}
                 >
-                  Timer
+                  <span className="relative">
+                    Timer
+                    {pathname.startsWith('/timer') && (
+                      <span className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-indigo-600 rounded-full"></span>
+                    )}
+                  </span>
                 </Link>
               </li>
             </ul>

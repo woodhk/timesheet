@@ -24,8 +24,8 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-700 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -36,189 +36,61 @@ export default function Home() {
   }
 
   return (
-    <main 
-      className="min-h-screen bg-gray-50"
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#F9FAFB'
-      }}
-    >
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <Header />
-      <div 
-        className="container mx-auto px-6 py-10"
-        style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '2.5rem 1.5rem'
-        }}
-      >
-        <div className="flex justify-between items-center mb-8"
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '2rem'
-          }}
-        >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-7xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
           <div>
-            <h1 
-              className="text-3xl font-bold mb-2 text-gray-900"
-              style={{
-                fontSize: '1.875rem',
-                fontWeight: 700,
-                marginBottom: '0.5rem',
-                color: '#111827'
-              }}
-            >
+            <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900 tracking-tight">
               Dashboard
             </h1>
-            <p 
-              className="text-gray-600"
-              style={{
-                color: '#4B5563'
-              }}
-            >
+            <p className="text-gray-600 text-lg">
               Track your progress towards mastering skills (10,000 hours)
             </p>
           </div>
-          <AddTaskForm />
+          <div className="mt-2 sm:mt-0">
+            <AddTaskForm />
+          </div>
         </div>
         
         {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex justify-center py-16">
+            <div className="w-14 h-14 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 text-red-700 p-4 rounded-md shadow-sm">
+          <div className="bg-red-50 text-red-700 p-5 rounded-xl shadow-sm border border-red-200 my-6">
             {error}
           </div>
         ) : (
           <TaskList tasks={tasks} />
         )}
         
-        <div 
-          className="mt-12 bg-white rounded-lg shadow-sm p-8 border border-gray-100"
-          style={{
-            marginTop: '3rem',
-            backgroundColor: 'white',
-            borderRadius: '0.75rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            padding: '2rem',
-            border: '1px solid #F3F4F6'
-          }}
-        >
-          <h2 
-            className="text-xl font-semibold mb-6 text-gray-900"
-            style={{
-              fontSize: '1.25rem',
-              fontWeight: 600,
-              marginBottom: '1.5rem',
-              color: '#111827'
-            }}
-          >
+        <div className="mt-14 bg-white rounded-xl shadow-md p-8 border border-gray-200">
+          <h2 className="text-2xl font-semibold mb-8 text-gray-900 pb-2 border-b border-gray-100">
             Quick Stats
           </h2>
-          <div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '1.5rem'
-            }}
-          >
-            <div 
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
-              style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.75rem',
-                border: '1px solid #E5E7EB',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-              }}
-            >
-              <p 
-                className="text-gray-600 text-sm font-medium mb-2"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  marginBottom: '0.5rem'
-                }}
-              >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <p className="text-gray-600 text-sm font-medium mb-2 uppercase tracking-wider">
                 Total Tasks
               </p>
-              <p 
-                className="text-3xl font-bold text-gray-900"
-                style={{
-                  fontSize: '1.875rem',
-                  fontWeight: 700,
-                  color: '#111827'
-                }}
-              >
+              <p className="text-3xl font-bold text-gray-900">
                 {tasks.length}
               </p>
             </div>
-            <div 
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
-              style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.75rem',
-                border: '1px solid #E5E7EB',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-              }}
-            >
-              <p 
-                className="text-gray-600 text-sm font-medium mb-2"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  marginBottom: '0.5rem'
-                }}
-              >
+            <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <p className="text-gray-600 text-sm font-medium mb-2 uppercase tracking-wider">
                 Total Hours
               </p>
-              <p 
-                className="text-3xl font-bold text-gray-900"
-                style={{
-                  fontSize: '1.875rem',
-                  fontWeight: 700,
-                  color: '#111827'
-                }}
-              >
+              <p className="text-3xl font-bold text-gray-900">
                 {tasks.reduce((sum, task) => sum + task.hoursSpent, 0).toFixed(1)}
               </p>
             </div>
-            <div 
-              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
-              style={{
-                backgroundColor: 'white',
-                padding: '1.5rem',
-                borderRadius: '0.75rem',
-                border: '1px solid #E5E7EB',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-              }}
-            >
-              <p 
-                className="text-gray-600 text-sm font-medium mb-2"
-                style={{
-                  color: '#4B5563',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  marginBottom: '0.5rem'
-                }}
-              >
+            <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <p className="text-gray-600 text-sm font-medium mb-2 uppercase tracking-wider">
                 Categories
               </p>
-              <p 
-                className="text-3xl font-bold text-gray-900"
-                style={{
-                  fontSize: '1.875rem',
-                  fontWeight: 700,
-                  color: '#111827'
-                }}
-              >
+              <p className="text-3xl font-bold text-gray-900">
                 {new Set(tasks.map(task => task.category)).size}
               </p>
             </div>

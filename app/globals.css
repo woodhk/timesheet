@@ -1,29 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 245, 247, 250;
+  --foreground-rgb: 30, 41, 59;
+  --background-start-rgb: 248, 250, 252;
   --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --primary-color: 37, 99, 235;
+  --accent-color: 79, 70, 229;
+  --neutral-color: 100, 116, 139;
+  --success-color: 16, 185, 129;
+  --danger-color: 239, 68, 68;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -31,10 +31,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgba(var(--neutral-color), 0.5);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(var(--neutral-color), 0.7);
 }

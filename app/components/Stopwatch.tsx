@@ -16,6 +16,10 @@ export default function Stopwatch({ task }: StopwatchProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useSupabase();
+  // Add states for manual time entry
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [manualHours, setManualHours] = useState(0);
+  const [manualMinutes, setManualMinutes] = useState(0);
   
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -54,6 +58,82 @@ export default function Stopwatch({ task }: StopwatchProps) {
     setIsRunning(false);
     setStartTime(null);
     setError(null);
+  };
+
+  // Add handler for manual time entry
+  const handleManualSave = async () => {
+    if (!user) {
+      setError('You must be logged in to save time entries');
+      return;
+    }
+    
+    if (manualHours === 0 && manualMinutes === 0) {
+      setError('Please enter a valid time');
+      return;
+    }
+    
+    setIsSaving(true);
+    setError(null);
+    
+    try {
+      const manualTimeInSeconds = (manualHours * 3600) + (manualMinutes * 60);
+      const now = new Date();
+      // Calculate start time by subtracting the manual time from now
+      const calculatedStartTime = new Date(now.getTime() - (manualTimeInSeconds * 1000));
+      
+      // Insert time entry
+      const { error: timeError } = await supabase
+        .from('time_entries')
+        .insert([
+          {
+            task_id: task.id,
+            user_id: user.id,
+            duration_seconds: manualTimeInSeconds,
+            started_at: calculatedStartTime.toISOString(),
+            ended_at: now.toISOString(),
+            created_at: now.toISOString(),
+          },
+        ])
+        .select()
+        .single();
+      
+      if (timeError) throw new Error(timeError.message);
+      
+      // Get current task hours
+      const { data: currentTask, error: taskFetchError } = await supabase
+        .from('tasks')
+        .select('hours_spent')
+        .eq('id', task.id)
+        .single();
+      
+      if (taskFetchError) throw new Error(taskFetchError.message);
+      
+      // Update task hours_spent
+      const hoursToAdd = manualTimeInSeconds / 3600; // Convert seconds to hours
+      
+      const { error: updateError } = await supabase
+        .from('tasks')
+        .update({
+          hours_spent: currentTask.hours_spent + hoursToAdd,
+          updated_at: now.toISOString(),
+        })
+        .eq('id', task.id);
+      
+      if (updateError) throw new Error(updateError.message);
+      
+      // Reset manual time inputs
+      setManualHours(0);
+      setManualMinutes(0);
+      setShowManualEntry(false);
+      
+      // Refresh the page to show updated hours
+      window.location.reload();
+    } catch (err: Error | unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred while saving your time');
+      console.error('Error saving manual time entry:', err);
+    } finally {
+      setIsSaving(false);
+    }
   };
   
   const handleSave = async () => {
@@ -111,6 +191,8 @@ export default function Stopwatch({ task }: StopwatchProps) {
       // Success, reset the timer
       handleReset();
       
+      // Refresh the page to show updated hours
+      window.location.reload();
     } catch (err: Error | unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving your time');
       console.error('Error saving time entry:', err);
@@ -120,141 +202,149 @@ export default function Stopwatch({ task }: StopwatchProps) {
   };
 
   // Determine category-based colors
-  const categoryColor = 
-    task.category === 'developing' ? '#3B82F6' :
-    task.category === 'ui/ux' ? '#8B5CF6' :
-    task.category === 'sales' ? '#10B981' : '#6B7280';
+  const categoryColors = {
+    developing: '#4F46E5', // Indigo 600
+    'ui/ux': '#8B5CF6',    // Violet 500
+    sales: '#10B981',      // Emerald 500
+    default: '#6B7280'     // Gray 500
+  };
+  
+  const categoryColor = categoryColors[task.category as keyof typeof categoryColors] || categoryColors.default;
   
   // Button colors based on state
   const startStopBackgroundColor = isRunning ? '#EF4444' : '#10B981';
   
   return (
-    <div 
-      className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto mt-8"
-      style={{
-        backgroundColor: 'white',
-        borderRadius: '0.5rem',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        padding: '2rem',
-        maxWidth: '28rem',
-        margin: '2rem auto 0'
-      }}
-    >
-      <h2 
-        className="text-2xl font-bold text-center mb-2"
-        style={{
-          fontSize: '1.5rem',
-          fontWeight: 700,
-          textAlign: 'center',
-          marginBottom: '0.5rem'
-        }}
-      >
-        {task.name}
-      </h2>
-      <div 
-        className={`text-sm inline-block px-2 py-1 rounded-full text-white mb-6`}
-        style={{
-          fontSize: '0.875rem',
-          display: 'inline-block',
-          padding: '0.25rem 0.5rem',
-          borderRadius: '9999px',
-          color: 'white',
-          marginBottom: '1.5rem',
-          backgroundColor: categoryColor
-        }}
-      >
-        {task.category}
+    <div className="bg-white rounded-2xl shadow-md p-8 max-w-md mx-auto mt-8 border border-slate-100">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-slate-800">
+          {task.name}
+        </h2>
+        <div className="text-sm px-3 py-1.5 rounded-full text-white" style={{ backgroundColor: categoryColor }}>
+          {task.category}
+        </div>
       </div>
       
-      <div 
-        className="text-6xl font-mono text-center py-6 mb-8"
-        style={{
-          fontSize: '3.75rem',
-          fontFamily: 'monospace',
-          textAlign: 'center',
-          padding: '1.5rem 0',
-          marginBottom: '2rem'
-        }}
-      >
-        {formatTime(time)}
-      </div>
+      {!showManualEntry && (
+        <div className="bg-slate-50 rounded-xl py-10 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 h-1 w-full" style={{ backgroundColor: categoryColor }}></div>
+          <div className="text-center">
+            <div className="text-6xl font-mono font-bold text-slate-700">
+              {formatTime(time)}
+            </div>
+            <div className="mt-2 text-sm text-slate-500">
+              {isRunning ? 'Running...' : 'Ready'}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showManualEntry && (
+        <div className="bg-slate-50 rounded-xl p-6 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 left-0 h-1 w-full" style={{ backgroundColor: categoryColor }}></div>
+          <div className="text-center mb-4 text-slate-600 font-medium">Enter time manually:</div>
+          <div className="flex items-center justify-center gap-4">
+            <div>
+              <label htmlFor="hours" className="block text-sm font-medium text-slate-600 mb-1">Hours</label>
+              <input 
+                type="number" 
+                id="hours"
+                min="0"
+                value={manualHours}
+                onChange={(e) => setManualHours(Math.max(0, parseInt(e.target.value) || 0))}
+                className="w-24 px-3 py-2.5 border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-transparent focus:outline-none"
+              />
+            </div>
+            <div>
+              <label htmlFor="minutes" className="block text-sm font-medium text-slate-600 mb-1">Minutes</label>
+              <input 
+                type="number" 
+                id="minutes"
+                min="0"
+                max="59"
+                value={manualMinutes}
+                onChange={(e) => setManualMinutes(Math.min(59, Math.max(0, parseInt(e.target.value) || 0)))}
+                className="w-24 px-3 py-2.5 border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-transparent focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      )}
       
       {error && (
-        <div 
-          className="bg-red-50 text-red-700 p-3 rounded-md mb-4"
-          style={{
-            backgroundColor: '#FEF2F2',
-            color: '#B91C1C',
-            padding: '0.75rem',
-            borderRadius: '0.375rem',
-            marginBottom: '1rem'
-          }}
-        >
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6 border border-red-100">
           {error}
         </div>
       )}
       
-      <div 
-        className="flex space-x-4 justify-center"
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          justifyContent: 'center'
-        }}
-      >
+      {/* Conditional rendering for Stopwatch or Manual Entry buttons */}
+      {!showManualEntry ? (
+        <div className="flex space-x-4 justify-center">
+          <button
+            onClick={handleStartStop}
+            className="flex-1 py-3.5 rounded-xl text-white font-medium transition-all duration-200"
+            style={{
+              backgroundColor: startStopBackgroundColor,
+              boxShadow: isRunning ? '0 0 0 2px rgba(239, 68, 68, 0.2)' : '0 0 0 2px rgba(16, 185, 129, 0.2)'
+            }}
+          >
+            {isRunning ? 'Stop' : 'Start'}
+          </button>
+          
+          <button
+            onClick={handleReset}
+            className="flex-1 py-3.5 rounded-xl bg-slate-200 text-slate-700 font-medium transition-all duration-200 disabled:opacity-50"
+            disabled={isRunning}
+          >
+            Reset
+          </button>
+          
+          {time > 0 && !isRunning && (
+            <button
+              onClick={handleSave}
+              className="flex-1 py-3.5 rounded-xl text-white font-medium transition-all duration-200"
+              style={{ backgroundColor: '#4F46E5', boxShadow: '0 0 0 2px rgba(79, 70, 229, 0.2)' }}
+            >
+              Save Time
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="flex space-x-4 justify-center">
+          <button
+            onClick={handleManualSave}
+            disabled={isSaving}
+            className="flex-1 py-3.5 rounded-xl text-white font-medium transition-all duration-200"
+            style={{ backgroundColor: '#4F46E5', boxShadow: '0 0 0 2px rgba(79, 70, 229, 0.2)', opacity: isSaving ? 0.7 : 1 }}
+          >
+            {isSaving ? 'Saving...' : 'Save Entry'}
+          </button>
+          
+          <button
+            onClick={() => setShowManualEntry(false)}
+            className="flex-1 py-3.5 rounded-xl bg-slate-200 text-slate-700 font-medium transition-all duration-200"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      
+      {/* Toggle between stopwatch and manual entry */}
+      <div className="mt-8 text-center">
         <button
-          onClick={handleStartStop}
-          className={`px-6 py-3 rounded-lg text-white font-medium ${
-            isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-          }`}
-          style={{
-            padding: '0.75rem 1.5rem',
-            borderRadius: '0.5rem',
-            color: 'white',
-            fontWeight: 500,
-            cursor: 'pointer',
-            backgroundColor: startStopBackgroundColor,
-            border: 'none'
+          onClick={() => {
+            if (isRunning) return; // Don't allow switching if timer is running
+            setShowManualEntry(!showManualEntry);
+            if (showManualEntry) {
+              setManualHours(0);
+              setManualMinutes(0);
+            }
           }}
-        >
-          {isRunning ? 'Stop' : 'Start'}
-        </button>
-        
-        <button
-          onClick={handleReset}
-          className="px-6 py-3 rounded-lg bg-gray-300 hover:bg-gray-400 font-medium"
-          style={{
-            padding: '0.75rem 1.5rem',
-            borderRadius: '0.5rem',
-            backgroundColor: '#D1D5DB',
-            fontWeight: 500,
-            cursor: isRunning ? 'not-allowed' : 'pointer',
-            opacity: isRunning ? 0.5 : 1,
-            border: 'none'
-          }}
+          className="text-indigo-600 hover:text-indigo-800 text-sm font-medium disabled:opacity-50"
           disabled={isRunning}
         >
-          Reset
+          {showManualEntry ? 'Use Stopwatch Instead' : 'Enter Time Manually'}
         </button>
-        
-        {time > 0 && !isRunning && (
-          <button
-            onClick={handleSave}
-            className="px-6 py-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium"
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '0.5rem',
-              backgroundColor: '#3B82F6',
-              color: 'white',
-              fontWeight: 500,
-              cursor: 'pointer',
-              border: 'none'
-            }}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving...' : 'Save'}
-          </button>
-        )}
       </div>
     </div>
   );
