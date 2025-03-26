@@ -5,7 +5,6 @@ import { Database } from '@/types/supabase';
 
 // Create a Supabase client for the current request
 async function createClientForServer() {
-  const cookieStore = cookies();
   const headersList = headers();
   
   // Use the authorization header from the request

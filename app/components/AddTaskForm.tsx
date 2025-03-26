@@ -27,7 +27,7 @@ export default function AddTaskForm() {
 
     try {
       // Use Supabase client directly instead of going through the API
-      const { data, error: dbError } = await supabase
+      const { error: dbError } = await supabase
         .from('tasks')
         .insert([
           {
@@ -51,8 +51,8 @@ export default function AddTaskForm() {
       
       // Refresh the page to show the new task
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'An error occurred while creating the task');
+    } catch (err: Error | unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred while creating the task');
       console.error('Error creating task:', err);
     } finally {
       setIsLoading(false);

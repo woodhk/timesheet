@@ -45,7 +45,7 @@ export async function PUT(request: Request, { params }: Params) {
   const supabase = createServerClient();
   
   // First verify the task belongs to the user
-  const { data: task, error: taskError } = await supabase
+  const { error: taskError } = await supabase
     .from('tasks')
     .select('*')
     .eq('id', id)
@@ -86,7 +86,7 @@ export async function DELETE(request: Request, { params }: Params) {
   const supabase = createServerClient();
   
   // First verify the task belongs to the user
-  const { data: task, error: taskError } = await supabase
+  const { error: taskError } = await supabase
     .from('tasks')
     .select('*')
     .eq('id', id)

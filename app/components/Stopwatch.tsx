@@ -69,7 +69,7 @@ export default function Stopwatch({ task }: StopwatchProps) {
       const endTime = new Date();
       
       // Step 1: Insert time entry using Supabase client directly
-      const { data: timeEntry, error: timeError } = await supabase
+      const { error: timeError } = await supabase
         .from('time_entries')
         .insert([
           {
@@ -111,8 +111,8 @@ export default function Stopwatch({ task }: StopwatchProps) {
       // Success, reset the timer
       handleReset();
       
-    } catch (err: any) {
-      setError(err.message || 'An error occurred while saving your time');
+    } catch (err: Error | unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred while saving your time');
       console.error('Error saving time entry:', err);
     } finally {
       setIsSaving(false);

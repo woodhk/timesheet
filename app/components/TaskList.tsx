@@ -39,8 +39,8 @@ export default function TaskList({ tasks }: TaskListProps) {
       
       setDeleteConfirmation(null);
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to delete the task');
+    } catch (err: Error | unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to delete the task');
       console.error('Delete task error:', err);
     } finally {
       setIsDeleting(false);
