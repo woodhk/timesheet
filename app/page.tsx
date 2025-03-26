@@ -1,103 +1,218 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect } from 'react';
+import Header from './components/Header';
+import TaskList from './components/TaskList';
+import AddTaskForm from './components/AddTaskForm';
+import { useTasks } from './hooks/useTasks';
+import { useSupabase } from './hooks/useSupabase';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { tasks, loading, error } = useTasks();
+  const { user, loading: authLoading } = useSupabase();
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect to login
+  }
+
+  return (
+    <main 
+      className="min-h-screen bg-gray-50"
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#F9FAFB'
+      }}
+    >
+      <Header />
+      <div 
+        className="container mx-auto px-4 py-8"
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '2rem 1rem'
+        }}
+      >
+        <div className="flex justify-between items-center mb-6"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1.5rem'
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <div>
+            <h1 
+              className="text-3xl font-bold mb-2"
+              style={{
+                fontSize: '1.875rem',
+                fontWeight: 700,
+                marginBottom: '0.5rem'
+              }}
+            >
+              Dashboard
+            </h1>
+            <p 
+              className="text-gray-600"
+              style={{
+                color: '#4B5563'
+              }}
+            >
+              Track your progress towards mastery (10,000 hours)
+            </p>
+          </div>
+          <AddTaskForm />
+        </div>
+        
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 text-red-700 p-4 rounded-md">
+            {error}
+          </div>
+        ) : (
+          <TaskList tasks={tasks} />
+        )}
+        
+        <div 
+          className="mt-12 bg-white rounded-lg shadow-md p-6"
+          style={{
+            marginTop: '3rem',
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            padding: '1.5rem'
+          }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <h2 
+            className="text-xl font-semibold mb-4"
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: 600,
+              marginBottom: '1rem'
+            }}
+          >
+            Quick Stats
+          </h2>
+          <div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '1rem'
+            }}
+          >
+            <div 
+              className="bg-blue-50 p-4 rounded-lg border border-blue-100"
+              style={{
+                backgroundColor: '#EFF6FF',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #DBEAFE'
+              }}
+            >
+              <p 
+                className="text-blue-800 text-sm font-medium"
+                style={{
+                  color: '#1E40AF',
+                  fontSize: '0.875rem',
+                  fontWeight: 500
+                }}
+              >
+                Total Tasks
+              </p>
+              <p 
+                className="text-2xl font-bold"
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700
+                }}
+              >
+                {tasks.length}
+              </p>
+            </div>
+            <div 
+              className="bg-purple-50 p-4 rounded-lg border border-purple-100"
+              style={{
+                backgroundColor: '#F5F3FF',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #EDE9FE'
+              }}
+            >
+              <p 
+                className="text-purple-800 text-sm font-medium"
+                style={{
+                  color: '#5B21B6',
+                  fontSize: '0.875rem',
+                  fontWeight: 500
+                }}
+              >
+                Total Hours
+              </p>
+              <p 
+                className="text-2xl font-bold"
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700
+                }}
+              >
+                {tasks.reduce((sum, task) => sum + task.hoursSpent, 0).toFixed(1)}
+              </p>
+            </div>
+            <div 
+              className="bg-emerald-50 p-4 rounded-lg border border-emerald-100"
+              style={{
+                backgroundColor: '#ECFDF5',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #D1FAE5'
+              }}
+            >
+              <p 
+                className="text-emerald-800 text-sm font-medium"
+                style={{
+                  color: '#065F46',
+                  fontSize: '0.875rem',
+                  fontWeight: 500
+                }}
+              >
+                Categories
+              </p>
+              <p 
+                className="text-2xl font-bold"
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700
+                }}
+              >
+                {new Set(tasks.map(task => task.category)).size}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
