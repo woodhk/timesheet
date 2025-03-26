@@ -45,28 +45,29 @@ export default function Home() {
     >
       <Header />
       <div 
-        className="container mx-auto px-4 py-8"
+        className="container mx-auto px-6 py-10"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '2rem 1rem'
+          padding: '2.5rem 1.5rem'
         }}
       >
-        <div className="flex justify-between items-center mb-6"
+        <div className="flex justify-between items-center mb-8"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '1.5rem'
+            marginBottom: '2rem'
           }}
         >
           <div>
             <h1 
-              className="text-3xl font-bold mb-2"
+              className="text-3xl font-bold mb-2 text-gray-900"
               style={{
                 fontSize: '1.875rem',
                 fontWeight: 700,
-                marginBottom: '0.5rem'
+                marginBottom: '0.5rem',
+                color: '#111827'
               }}
             >
               Dashboard
@@ -77,7 +78,7 @@ export default function Home() {
                 color: '#4B5563'
               }}
             >
-              Track your progress towards mastery (10,000 hours)
+              Track your progress towards mastering skills (10,000 hours)
             </p>
           </div>
           <AddTaskForm />
@@ -88,7 +89,7 @@ export default function Home() {
             <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 text-red-700 p-4 rounded-md">
+          <div className="bg-red-50 text-red-700 p-4 rounded-md shadow-sm">
             {error}
           </div>
         ) : (
@@ -96,115 +97,126 @@ export default function Home() {
         )}
         
         <div 
-          className="mt-12 bg-white rounded-lg shadow-md p-6"
+          className="mt-12 bg-white rounded-lg shadow-sm p-8 border border-gray-100"
           style={{
             marginTop: '3rem',
             backgroundColor: 'white',
-            borderRadius: '0.5rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            padding: '1.5rem'
+            borderRadius: '0.75rem',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+            padding: '2rem',
+            border: '1px solid #F3F4F6'
           }}
         >
           <h2 
-            className="text-xl font-semibold mb-4"
+            className="text-xl font-semibold mb-6 text-gray-900"
             style={{
               fontSize: '1.25rem',
               fontWeight: 600,
-              marginBottom: '1rem'
+              marginBottom: '1.5rem',
+              color: '#111827'
             }}
           >
             Quick Stats
           </h2>
           <div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '1rem'
+              gap: '1.5rem'
             }}
           >
             <div 
-              className="bg-blue-50 p-4 rounded-lg border border-blue-100"
+              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
               style={{
-                backgroundColor: '#EFF6FF',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #DBEAFE'
+                backgroundColor: 'white',
+                padding: '1.5rem',
+                borderRadius: '0.75rem',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
               }}
             >
               <p 
-                className="text-blue-800 text-sm font-medium"
+                className="text-gray-600 text-sm font-medium mb-2"
                 style={{
-                  color: '#1E40AF',
+                  color: '#4B5563',
                   fontSize: '0.875rem',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  marginBottom: '0.5rem'
                 }}
               >
                 Total Tasks
               </p>
               <p 
-                className="text-2xl font-bold"
+                className="text-3xl font-bold text-gray-900"
                 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 700
+                  fontSize: '1.875rem',
+                  fontWeight: 700,
+                  color: '#111827'
                 }}
               >
                 {tasks.length}
               </p>
             </div>
             <div 
-              className="bg-purple-50 p-4 rounded-lg border border-purple-100"
+              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
               style={{
-                backgroundColor: '#F5F3FF',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #EDE9FE'
+                backgroundColor: 'white',
+                padding: '1.5rem',
+                borderRadius: '0.75rem',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
               }}
             >
               <p 
-                className="text-purple-800 text-sm font-medium"
+                className="text-gray-600 text-sm font-medium mb-2"
                 style={{
-                  color: '#5B21B6',
+                  color: '#4B5563',
                   fontSize: '0.875rem',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  marginBottom: '0.5rem'
                 }}
               >
                 Total Hours
               </p>
               <p 
-                className="text-2xl font-bold"
+                className="text-3xl font-bold text-gray-900"
                 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 700
+                  fontSize: '1.875rem',
+                  fontWeight: 700,
+                  color: '#111827'
                 }}
               >
                 {tasks.reduce((sum, task) => sum + task.hoursSpent, 0).toFixed(1)}
               </p>
             </div>
             <div 
-              className="bg-emerald-50 p-4 rounded-lg border border-emerald-100"
+              className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
               style={{
-                backgroundColor: '#ECFDF5',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                border: '1px solid #D1FAE5'
+                backgroundColor: 'white',
+                padding: '1.5rem',
+                borderRadius: '0.75rem',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
               }}
             >
               <p 
-                className="text-emerald-800 text-sm font-medium"
+                className="text-gray-600 text-sm font-medium mb-2"
                 style={{
-                  color: '#065F46',
+                  color: '#4B5563',
                   fontSize: '0.875rem',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  marginBottom: '0.5rem'
                 }}
               >
                 Categories
               </p>
               <p 
-                className="text-2xl font-bold"
+                className="text-3xl font-bold text-gray-900"
                 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: 700
+                  fontSize: '1.875rem',
+                  fontWeight: 700,
+                  color: '#111827'
                 }}
               >
                 {new Set(tasks.map(task => task.category)).size}

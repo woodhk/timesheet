@@ -9,12 +9,13 @@ export default function Header() {
   
   return (
     <header 
-      className="bg-gradient-to-r from-purple-800 to-blue-600 text-white shadow-lg py-4"
+      className="bg-white text-gray-800 shadow-sm py-4 border-b border-gray-200"
       style={{
-        background: 'linear-gradient(to right, #6B46C1, #2563EB)',
-        color: 'white',
+        backgroundColor: 'white',
+        color: '#1F2937',
         padding: '1rem 0',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+        borderBottom: '1px solid #E5E7EB'
       }}
     >
       <div 
@@ -22,7 +23,7 @@ export default function Header() {
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0 1rem',
+          padding: '0 1.5rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
@@ -37,10 +38,11 @@ export default function Header() {
           }}
         >
           <h1 
-            className="text-2xl font-bold"
+            className="text-2xl font-bold text-gray-900"
             style={{
               fontSize: '1.5rem',
-              fontWeight: 700
+              fontWeight: 700,
+              color: '#111827'
             }}
           >
             10,000 Hours
@@ -58,18 +60,20 @@ export default function Header() {
               <li>
                 <Link 
                   href="/" 
-                  className={`hover:text-purple-200 transition-colors ${
-                    pathname === '/' ? 'font-bold border-b-2 border-white pb-1' : ''
+                  className={`hover:text-blue-600 transition-colors ${
+                    pathname === '/' ? 'font-medium text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600'
                   }`}
                   style={{
-                    color: 'white',
                     textDecoration: 'none',
                     transition: 'color 0.15s ease',
                     ...(pathname === '/' ? {
-                      fontWeight: 700,
-                      borderBottom: '2px solid white',
+                      fontWeight: 500,
+                      color: '#2563EB',
+                      borderBottom: '2px solid #2563EB',
                       paddingBottom: '0.25rem'
-                    } : {})
+                    } : {
+                      color: '#4B5563'
+                    })
                   }}
                 >
                   Dashboard
@@ -78,18 +82,20 @@ export default function Header() {
               <li>
                 <Link 
                   href="/timer" 
-                  className={`hover:text-purple-200 transition-colors ${
-                    pathname.startsWith('/timer') ? 'font-bold border-b-2 border-white pb-1' : ''
+                  className={`hover:text-blue-600 transition-colors ${
+                    pathname.startsWith('/timer') ? 'font-medium text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600'
                   }`}
                   style={{
-                    color: 'white',
                     textDecoration: 'none',
                     transition: 'color 0.15s ease',
                     ...(pathname.startsWith('/timer') ? {
-                      fontWeight: 700,
-                      borderBottom: '2px solid white',
+                      fontWeight: 500,
+                      color: '#2563EB',
+                      borderBottom: '2px solid #2563EB',
                       paddingBottom: '0.25rem'
-                    } : {})
+                    } : {
+                      color: '#4B5563'
+                    })
                   }}
                 >
                   Timer

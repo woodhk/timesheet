@@ -128,7 +128,7 @@ export default function TimerPage() {
                       <span className={`px-2 py-1 text-xs rounded-full text-white ${
                         task.category === 'developing' ? 'bg-blue-500' :
                         task.category === 'ui/ux' ? 'bg-purple-500' :
-                        task.category === 'copywriting' ? 'bg-emerald-500' : 'bg-gray-500'
+                        task.category === 'sales' ? 'bg-emerald-500' : 'bg-gray-500'
                       }`}
                         style={{ 
                           padding: '0.25rem 0.5rem',
@@ -138,7 +138,7 @@ export default function TimerPage() {
                           backgroundColor: 
                             task.category === 'developing' ? '#3B82F6' :
                             task.category === 'ui/ux' ? '#8B5CF6' :
-                            task.category === 'copywriting' ? '#10B981' : '#6B7280'
+                            task.category === 'sales' ? '#10B981' : '#6B7280'
                         }}
                       >
                         {task.category}

@@ -63,14 +63,16 @@ export default function AddTaskForm() {
     return (
       <button
         onClick={() => setIsFormOpen(true)}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
         style={{
           backgroundColor: '#2563EB',
           color: 'white',
-          padding: '0.5rem 1rem',
+          padding: '0.625rem 1.25rem',
           borderRadius: '0.375rem',
           border: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          transition: 'background-color 0.2s ease'
         }}
       >
         Add New Task
@@ -79,27 +81,29 @@ export default function AddTaskForm() {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md mb-6"
+    <div className="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-100"
       style={{
         backgroundColor: 'white',
         padding: '1.5rem',
-        borderRadius: '0.5rem',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        marginBottom: '1.5rem'
+        borderRadius: '0.75rem',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+        marginBottom: '1.5rem',
+        border: '1px solid #F3F4F6'
       }}
     >
-      <div className="flex justify-between items-center mb-4"
+      <div className="flex justify-between items-center mb-5"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '1rem'
+          marginBottom: '1.25rem'
         }}
       >
-        <h2 className="text-lg font-semibold"
+        <h2 className="text-lg font-semibold text-gray-900"
           style={{
             fontSize: '1.125rem',
-            fontWeight: 600
+            fontWeight: 600,
+            color: '#111827'
           }}
         >
           Add a New Task
@@ -111,7 +115,8 @@ export default function AddTaskForm() {
             color: '#6B7280',
             background: 'none',
             border: 'none',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            transition: 'color 0.2s ease'
           }}
         >
           Cancel
@@ -119,22 +124,23 @@ export default function AddTaskForm() {
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4"
+        <div className="bg-red-50 text-red-700 p-4 rounded-md mb-5 border border-red-100"
           style={{
             backgroundColor: '#FEF2F2',
             color: '#B91C1C',
-            padding: '0.75rem',
-            borderRadius: '0.375rem',
-            marginBottom: '1rem'
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            marginBottom: '1.25rem',
+            border: '1px solid #FEE2E2'
           }}
         >
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
             Task Name
           </label>
           <input
@@ -143,18 +149,19 @@ export default function AddTaskForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             style={{
               width: '100%',
-              padding: '0.5rem 0.75rem',
+              padding: '0.625rem 0.75rem',
               border: '1px solid #D1D5DB',
-              borderRadius: '0.375rem'
+              borderRadius: '0.375rem',
+              transition: 'all 0.2s ease'
             }}
           />
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
             Category
           </label>
           <select
@@ -162,39 +169,43 @@ export default function AddTaskForm() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             style={{
               width: '100%',
-              padding: '0.5rem 0.75rem',
+              padding: '0.625rem 0.75rem',
               border: '1px solid #D1D5DB',
-              borderRadius: '0.375rem'
+              borderRadius: '0.375rem',
+              transition: 'all 0.2s ease'
             }}
           >
             <option value="developing">Development</option>
             <option value="ui/ux">UI/UX Design</option>
-            <option value="copywriting">Copywriting</option>
+            <option value="sales">Sales</option>
             <option value="other">Other</option>
           </select>
         </div>
 
-        <div className="flex justify-end"
+        <div className="flex justify-end pt-2"
           style={{
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            paddingTop: '0.5rem'
           }}
         >
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 shadow-sm"
             style={{
               backgroundColor: '#2563EB',
               color: 'white',
-              padding: '0.5rem 1rem',
+              padding: '0.625rem 1.25rem',
               borderRadius: '0.375rem',
               border: 'none',
               cursor: isLoading ? 'not-allowed' : 'pointer',
-              opacity: isLoading ? 0.5 : 1
+              opacity: isLoading ? 0.5 : 1,
+              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+              transition: 'background-color 0.2s ease'
             }}
           >
             {isLoading ? 'Creating...' : 'Create Task'}

@@ -123,7 +123,7 @@ export default function Stopwatch({ task }: StopwatchProps) {
   const categoryColor = 
     task.category === 'developing' ? '#3B82F6' :
     task.category === 'ui/ux' ? '#8B5CF6' :
-    task.category === 'copywriting' ? '#10B981' : '#6B7280';
+    task.category === 'sales' ? '#10B981' : '#6B7280';
   
   // Button colors based on state
   const startStopBackgroundColor = isRunning ? '#EF4444' : '#10B981';
