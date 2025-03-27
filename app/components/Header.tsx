@@ -57,6 +57,23 @@ export default function Header() {
                   </span>
                 </Link>
               </li>
+              <li>
+                <Link 
+                  href="/journal" 
+                  className={`flex items-center transition-colors px-1 py-1 ${
+                    pathname.startsWith('/journal') 
+                      ? 'text-indigo-600 font-medium' 
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <span className="relative">
+                    Journal
+                    {pathname.startsWith('/journal') && (
+                      <span className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-indigo-600 rounded-full"></span>
+                    )}
+                  </span>
+                </Link>
+              </li>
             </ul>
           </nav>
           <UserMenu />

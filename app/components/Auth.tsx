@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 export default function Auth() {
@@ -12,6 +12,8 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get('returnUrl') || '/';
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +54,15 @@ export default function Auth() {
         });
 
         if (error) throw error;
-        router.push('/');
+        
+        // If there's a returnUrl, navigate to it after login
+        if (returnUrl && returnUrl !== '/') {
+          console.log('Redirecting to:', returnUrl);
+          router.push(returnUrl);
+        } else {
+          console.log('Redirecting to home');
+          router.push('/');
+        }
         router.refresh();
       }
     } catch (err: Error | unknown) {

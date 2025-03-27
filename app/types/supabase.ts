@@ -120,6 +120,67 @@ export interface Database {
           }
         ]
       }
+      journal_entries: {
+        Row: {
+          id: string
+          user_id: string
+          entry_date: string
+          accomplishment: string | null
+          learning: string | null
+          hardest_moment: string | null
+          focus_time: string | null
+          avoidance: string | null
+          decision_regret: string | null
+          energy_sources: string | null
+          time_intentionality: string | null
+          goals_reflection: string | null
+          tomorrow_action: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          entry_date: string
+          accomplishment?: string | null
+          learning?: string | null
+          hardest_moment?: string | null
+          focus_time?: string | null
+          avoidance?: string | null
+          decision_regret?: string | null
+          energy_sources?: string | null
+          time_intentionality?: string | null
+          goals_reflection?: string | null
+          tomorrow_action?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          entry_date?: string
+          accomplishment?: string | null
+          learning?: string | null
+          hardest_moment?: string | null
+          focus_time?: string | null
+          avoidance?: string | null
+          decision_regret?: string | null
+          energy_sources?: string | null
+          time_intentionality?: string | null
+          goals_reflection?: string | null
+          tomorrow_action?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

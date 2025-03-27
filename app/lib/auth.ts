@@ -11,20 +11,37 @@ export async function getUser() {
   try {
     const {
       data: { user },
+      error,
     } = await supabase.auth.getUser();
+    
+    if (error) {
+      console.error('Error getting user from Supabase:', error);
+      return null;
+    }
+    
+    if (user) {
+      // Log some minimal information for debugging
+      console.log('User authenticated:', { id: user.id, email: user.email?.substring(0, 3) + '...' });
+    } else {
+      console.log('No authenticated user found');
+    }
     
     return user;
   } catch (error) {
-    console.error('Error getting user:', error);
+    console.error('Exception getting user:', error);
     return null;
   }
 }
 
-export async function requireAuth() {
+export async function requireAuth(returnUrl?: string) {
   const user = await getUser();
   
   if (!user) {
-    redirect('/login');
+    if (returnUrl) {
+      redirect(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+    } else {
+      redirect('/login');
+    }
   }
   
   return user;
