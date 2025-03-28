@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { use } from 'react';
 import Header from '../../components/Header';
 import JournalForm from '../../components/JournalForm';
 import { useSupabase } from '../../hooks/useSupabase';
@@ -17,6 +18,10 @@ interface JournalEntryWithId extends Partial<JournalEntry> {
 }
 
 export default function EditJournalPage({ params }: { params: { date: string } }) {
+  // Unwrap params
+  const unwrappedParams = use(params);
+  const dateParam = unwrappedParams.date;
+  
   const [entry, setEntry] = useState<JournalEntryWithId | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,9 +31,9 @@ export default function EditJournalPage({ params }: { params: { date: string } }
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push(`/login?returnUrl=/journal/${params.date}`);
+      router.push(`/login?returnUrl=/journal/${dateParam}`);
     }
-  }, [user, authLoading, router, params.date]);
+  }, [user, authLoading, router, dateParam]);
 
   // Fetch the specific journal entry
   useEffect(() => {
@@ -40,9 +45,9 @@ export default function EditJournalPage({ params }: { params: { date: string } }
       
       try {
         // Handle "today" special case
-        const entryDate = params.date === 'today' 
+        const entryDate = dateParam === 'today' 
           ? new Date().toISOString().split('T')[0]
-          : params.date;
+          : dateParam;
         
         const { data, error: dbError } = await supabase
           .from('journal_entries')
@@ -53,7 +58,7 @@ export default function EditJournalPage({ params }: { params: { date: string } }
         
         if (dbError) {
           if (dbError.code === 'PGRST116') { // No rows returned
-            if (params.date === 'today') {
+            if (dateParam === 'today') {
               // Today's entry doesn't exist yet
               router.push('/journal');
             } else {
@@ -76,7 +81,7 @@ export default function EditJournalPage({ params }: { params: { date: string } }
     if (user) {
       fetchEntry();
     }
-  }, [user, params.date, router]);
+  }, [user, dateParam, router]);
 
   const handleAfterSubmit = () => {
     router.push('/journal');

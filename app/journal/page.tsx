@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import JournalHistory from '../components/JournalHistory';
 import JournalForm from '../components/JournalForm';
+import FloatingActionButton from '../components/FloatingActionButton';
 import { useSupabase } from '../hooks/useSupabase';
 import { useJournalEntries } from '../hooks/useJournalEntries';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Toaster, toast } from 'sonner';
 
 export default function JournalPage() {
   const [showNewEntryForm, setShowNewEntryForm] = useState(false);
@@ -35,6 +37,24 @@ export default function JournalPage() {
   const handleAfterSubmit = () => {
     setShowNewEntryForm(false);
     fetchEntries();
+    toast.success("Journal entry saved successfully!");
+  };
+
+  const handleNewEntryClick = () => {
+    if (todayEntry) {
+      // If an entry exists for today, show a toast notification
+      toast.warning("You already have a journal entry for today", {
+        description: "You can edit your existing entry instead.",
+        action: {
+          label: "Edit Entry",
+          onClick: () => setShowNewEntryForm(true)
+        },
+        duration: 5000
+      });
+    } else {
+      // If no entry exists, show the form
+      setShowNewEntryForm(true);
+    }
   };
 
   if (authLoading) {
@@ -52,15 +72,14 @@ export default function JournalPage() {
     return null; // Will redirect to login
   }
   
-  // Show journal form if:
-  // 1. User explicitly clicked to show it, or
-  // 2. There's an entry for today and user clicked Edit
-  const showForm = showNewEntryForm || (todayEntry && showNewEntryForm);
+  // Show journal form if user explicitly clicked to show it
+  const showForm = showNewEntryForm;
 
   return (
     <main className="min-h-screen bg-gray-50">
       <Header />
-      <div className="container mx-auto px-4 py-8">
+      <Toaster position="top-center" />
+      <div className="container mx-auto px-4 py-8 pb-20">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Daily Journal</h1>
           
@@ -75,21 +94,12 @@ export default function JournalPage() {
               Back to journal history
             </button>
           ) : (
-            todayEntry ? (
-              <button 
-                onClick={() => setShowNewEntryForm(true)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block"
-              >
-                Edit Today's Entry
-              </button>
-            ) : (
-              <button 
-                onClick={() => setShowNewEntryForm(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 inline-block"
-              >
-                Create Today's Entry
-              </button>
-            )
+            <button 
+              onClick={handleNewEntryClick}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 inline-block"
+            >
+              New Journal Entry
+            </button>
           )}
         </div>
 
@@ -126,9 +136,28 @@ export default function JournalPage() {
             {entriesError}
           </div>
         ) : (
-          <JournalHistory entries={entries} />
+          <>
+            <div className="flex justify-end mb-4">
+              {todayEntry ? (
+                <button 
+                  onClick={() => setShowNewEntryForm(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block"
+                >
+                  Edit Today's Entry
+                </button>
+              ) : null}
+            </div>
+            <JournalHistory entries={entries} />
+          </>
         )}
       </div>
+      
+      {!showForm && (
+        <FloatingActionButton 
+          onClick={handleNewEntryClick}
+          label="New Entry"
+        />
+      )}
     </main>
   );
 } 
